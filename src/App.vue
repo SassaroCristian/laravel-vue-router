@@ -1,26 +1,27 @@
 <script>
-import AppComponent from "./components/AppComponent.vue"
-
-import axios from 'axios'; //importo Axios
-import { store } from "./store.js" //state management
+import HeaderComponent from "./components/HeaderComponent.vue";
+import EventCardComponent from "./components/EventCardComponent.vue";
+import axios from 'axios';
 
 export default {
 	components: {
-		AppComponent
+		HeaderComponent,
+		EventCardComponent
 	},
 	data() {
 		return {
-			store
-		}
+			events: [] // Inizializza lo stato degli eventi
+		};
 	},
 	mounted() {
-		this.doThings();
-
-		// axios.get("indirizzo").then(risultato => {
-		// 	console.log(risultato);
-		// }).catch(errore => {
-		// 	console.error(errore);
-		// });
+		axios.get("http://127.0.0.1:8000/api/json-e")
+			.then(response => {
+				console.log(response);
+				this.events = response.data; // Aggiorna lo stato degli eventi
+			})
+			.catch(error => {
+				console.error(error);
+			});
 	},
 	methods: {
 		doThings() {
@@ -32,25 +33,17 @@ export default {
 
 <template>
 	<main>
-		<AppComponent />
-
-		<button class="btn btn-primary">
-			<font-awesome-icon icon="fa-solid fa-home" class="me-1" />
-			<span>Primary button</span>
-		</button>
+		<HeaderComponent />
+		<!-- Passa gli eventi come prop al componente EventCardComponent -->
+		<EventCardComponent :events="events" />
 	</main>
 </template>
 
 <style lang="scss">
-// importo il foglio di stile generale dell'applicazione, non-scoped
 @use './styles/general.scss';
 </style>
 
 <style scoped lang="scss">
-// importo variabili
-// @use './styles/partials/variables' as *;
-
-// ...qui eventuale SCSS di App.vue
 main {
 	padding: 1rem;
 }
